@@ -1,104 +1,16 @@
 import 'dart:async';
 
-import 'package:ecommerceapptask/models/category.dart';
+import 'package:ecommerceapptask/features/home/services/home_services.dart';
 import 'package:ecommerceapptask/providers/carousel_provider.dart';
+import 'package:ecommerceapptask/providers/category_provider.dart';
+import 'package:ecommerceapptask/providers/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../models/Product.dart';
-import '../../../utils/colors.dart';
+import '../../../common/colors.dart';
 import '../widgets/carousel_slider.dart';
 import '../widgets/category_list.dart';
-
-List<Category> categoryList = [
-  Category(
-    id: 1,
-    name: "All Product",
-    image: "",
-  ),
-  Category(
-    id: 2,
-    name: "Smartphone",
-    image: "",
-  ),
-  Category(
-    id: 3,
-    name: "Wearable",
-    image: "",
-  ),
-  Category(
-    id: 4,
-    name: "Camera",
-    image: "",
-  ),
-];
-
-List<Product> productList = [
-  Product(
-    id: 1,
-    title: "Handmade Fresh Table",
-    price: 687,
-    description: "Andy shoes are designed to keeping in...",
-    category: Category(
-      id: 5,
-      name: "Others",
-      image: "https://placeimg.com/640/480/any?r=0.591926261873231",
-    ),
-    images: [
-      "https://i.pinimg.com/originals/dc/c7/cf/dcc7cff9631062828450f738e1aaa744.jpg",
-      "https://placeimg.com/640/480/any?r=0.9300320592588625",
-      "https://placeimg.com/640/480/any?r=0.8807778235430017"
-    ],
-  ),
-  Product(
-    id: 1,
-    title: "Handmade Fresh Table",
-    price: 687,
-    description: "Andy shoes are designed to keeping in...",
-    category: Category(
-      id: 5,
-      name: "Others",
-      image: "https://placeimg.com/640/480/any?r=0.591926261873231",
-    ),
-    images: [
-      "https://i.pinimg.com/originals/dc/c7/cf/dcc7cff9631062828450f738e1aaa744.jpg",
-      "https://placeimg.com/640/480/any?r=0.9300320592588625",
-      "https://placeimg.com/640/480/any?r=0.8807778235430017"
-    ],
-  ),
-  Product(
-    id: 1,
-    title: "Handmade Fresh Table",
-    price: 687,
-    description: "Andy shoes are designed to keeping in...",
-    category: Category(
-      id: 5,
-      name: "Others",
-      image: "https://placeimg.com/640/480/any?r=0.591926261873231",
-    ),
-    images: [
-      "https://i.pinimg.com/originals/dc/c7/cf/dcc7cff9631062828450f738e1aaa744.jpg",
-      "https://placeimg.com/640/480/any?r=0.9300320592588625",
-      "https://placeimg.com/640/480/any?r=0.8807778235430017"
-    ],
-  ),
-  Product(
-    id: 1,
-    title: "Handmade Fresh Table",
-    price: 687,
-    description: "Andy shoes are designed to keeping in...",
-    category: Category(
-      id: 5,
-      name: "Others",
-      image: "https://placeimg.com/640/480/any?r=0.591926261873231",
-    ),
-    images: [
-      "https://i.pinimg.com/originals/dc/c7/cf/dcc7cff9631062828450f738e1aaa744.jpg",
-      "https://placeimg.com/640/480/any?r=0.9300320592588625",
-      "https://placeimg.com/640/480/any?r=0.8807778235430017"
-    ],
-  ),
-];
+import '../widgets/product_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -108,12 +20,21 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final PageController _pageController = PageController(initialPage: 0);
-  Category selectedCategory = categoryList[0];
+  Timer? autoPlayTimer;
+  @override
+  void initState() {
+    super.initState();
+    fetchProducts();
+  }
+
+  Future<void> fetchProducts() async {
+    await HomeServices().fetchProduct(context: context);
+  }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    Timer.periodic(const Duration(seconds: 5), (Timer timer) {
+    autoPlayTimer = Timer.periodic(const Duration(seconds: 3), (Timer timer) {
       if (Provider.of<CarouselProvider>(context, listen: false).activeIndex <
           3) {
         Provider.of<CarouselProvider>(context, listen: false).updateActiveIndex(
@@ -128,12 +49,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         duration: const Duration(milliseconds: 500),
         curve: Curves.linear,
       );
+      timer.cancel();
     });
   }
 
   @override
   void dispose() {
     _pageController.dispose();
+    autoPlayTimer?.cancel();
     super.dispose();
   }
 
@@ -225,35 +148,41 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               screenHeight: screenHeight,
               pageController: _pageController,
             ),
-            CategoryList(
-              selectedCategory: selectedCategory,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(15.0),
+            const CategoryList(),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(15.0, 20, 5, 0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     "New Arrival",
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 23,
                       fontWeight: FontWeight.bold,
                       color: AppColors.darkColor,
-                    ),
-                  ),
-                  GestureDetector(
-                    child: Text(
-                      "See All",
-                      style: TextStyle(
-                          fontWeight: FontWeight.w800,
-                          color: AppColors.darkColor.withOpacity(0.7)),
                     ),
                   ),
                 ],
               ),
             ),
             SizedBox(
-              height: screenHeight * 0.32 * (productList.length / 2 + 1),
+              height: (Provider.of<CategoryProvider>(context, listen: true)
+                          .selectedCategory ==
+                      "All Product")
+                  ? screenHeight *
+                      0.33 *
+                      (Provider.of<ProductProvider>(context)
+                                  .productList
+                                  .length /
+                              2 +
+                          1)
+                  : screenHeight *
+                      0.33 *
+                      (Provider.of<CategoryProvider>(context)
+                                  .selectedCategoryProductsList
+                                  .length /
+                              2 +
+                          1),
               child: GridView.builder(
                 physics: const BouncingScrollPhysics(
                     parent: NeverScrollableScrollPhysics()),
@@ -265,90 +194,29 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   crossAxisCount: 2,
                   mainAxisExtent: screenHeight * 0.32,
                 ),
-                itemCount: productList.length,
+                itemCount: (Provider.of<CategoryProvider>(context, listen: true)
+                            .selectedCategory ==
+                        "All Product")
+                    ? Provider.of<ProductProvider>(context).productList.length
+                    : Provider.of<CategoryProvider>(context)
+                        .selectedCategoryProductsList
+                        .length,
                 itemBuilder: (context, index) {
-                  return Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: SizedBox(
-                      height: screenHeight * 0.25,
-                      child: Stack(
-                        children: [
-                          Column(
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: Container(
-                                  constraints: const BoxConstraints.expand(),
-                                  decoration: const BoxDecoration(
-                                    color: AppColors.darkColor,
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(20),
-                                      topRight: Radius.circular(20),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                flex: 3,
-                                child: Container(
-                                  constraints: const BoxConstraints.expand(),
-                                  decoration: const BoxDecoration(
-                                    color: AppColors.greyColor,
-                                    borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(20),
-                                      bottomRight: Radius.circular(20),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Image.network(
-                                      productList[index].images!.first,
-                                      width: screenWidth * 0.2,
-                                      height: screenHeight * 0.15,
-                                    ),
-                                  ],
-                                ),
-                                Text(
-                                  productList[index].title!,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                                ),
-                                Text(
-                                  productList[index].description!,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      '\$${productList[index].price!.toString()}',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w900,
-                                        fontSize: 17,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
+                  return (Provider.of<CategoryProvider>(context, listen: true)
+                              .selectedCategory ==
+                          "All Product")
+                      ? ProductCard(
+                          screenHeight: screenHeight,
+                          screenWidth: screenWidth,
+                          product: Provider.of<ProductProvider>(context)
+                              .productList[index],
+                        )
+                      : ProductCard(
+                          screenHeight: screenHeight,
+                          screenWidth: screenWidth,
+                          product: Provider.of<CategoryProvider>(context)
+                              .selectedCategoryProductsList[index],
+                        );
                 },
               ),
             ),

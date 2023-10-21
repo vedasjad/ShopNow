@@ -1,82 +1,67 @@
 import 'dart:convert';
 
-import 'package:ecommerceapptask/models/category.dart';
-
-/// id : 4
-/// title : "Handmade Fresh Table"
-/// price : 687
-/// description : "Andy shoes are designed to keeping in..."
-/// category : {"id":5,"name":"Others","image":"https://placeimg.com/640/480/any?r=0.591926261873231"}
-/// images : ["https://placeimg.com/640/480/any?r=0.9178516507833767","https://placeimg.com/640/480/any?r=0.9300320592588625","https://placeimg.com/640/480/any?r=0.8807778235430017"]
-
-Product productFromJson(String str) => Product.fromJson(json.decode(str));
-String productToJson(Product data) => json.encode(data.toJson());
+import 'category.dart';
 
 class Product {
+  final int id;
+  final String title;
+  final int price;
+  final String description;
+  final Category category;
+  final List<String> images;
+
   Product({
-    required num? id,
-    required String? title,
-    required num? price,
-    required String? description,
-    required Category? category,
-    required List<String>? images,
-  }) {
-    _id = id;
-    _title = title;
-    _price = price;
-    _description = description;
-    _category = category;
-    _images = images;
+    required this.id,
+    required this.title,
+    required this.price,
+    required this.description,
+    required this.category,
+    required this.images,
+  });
+
+  Map<String, dynamic> toMap() {
+    final result = <String, dynamic>{};
+  
+    result.addAll({'id': id});
+    result.addAll({'title': title});
+    result.addAll({'price': price});
+    result.addAll({'description': description});
+    result.addAll({'category': category.toMap()});
+    result.addAll({'images': images});
+  
+    return result;
   }
 
-  Product.fromJson(dynamic json) {
-    _id = json['id'];
-    _title = json['title'];
-    _price = json['price'];
-    _description = json['description'];
-    _category =
-        json['category'] != null ? Category.fromJson(json['category']) : null;
-    _images = json['images'] != null ? json['images'].cast<String>() : [];
+  factory Product.fromMap(Map<String, dynamic> map) {
+    return Product(
+      id: map['id']?.toInt() ?? 0,
+      title: map['title'] ?? '',
+      price: map['price']?.toInt() ?? 0,
+      description: map['description'] ?? '',
+      category: Category.fromMap(map['category']),
+      images: List<String>.from(map['images']),
+    );
   }
-  num? _id;
-  String? _title;
-  num? _price;
-  String? _description;
-  Category? _category;
-  List<String>? _images;
+
+  String toJson() => json.encode(toMap());
+
+  factory Product.fromJson(String source) => Product.fromMap(json.decode(source));
+
   Product copyWith({
-    num? id,
+    int? id,
     String? title,
-    num? price,
+    int? price,
     String? description,
     Category? category,
     List<String>? images,
-  }) =>
-      Product(
-        id: id ?? _id,
-        title: title ?? _title,
-        price: price ?? _price,
-        description: description ?? _description,
-        category: category ?? _category,
-        images: images ?? _images,
-      );
-  num? get id => _id;
-  String? get title => _title;
-  num? get price => _price;
-  String? get description => _description;
-  Category? get category => _category;
-  List<String>? get images => _images;
-
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['id'] = _id;
-    map['title'] = _title;
-    map['price'] = _price;
-    map['description'] = _description;
-    if (_category != null) {
-      map['category'] = _category?.toJson();
-    }
-    map['images'] = _images;
-    return map;
+  }) {
+    return Product(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      price: price ?? this.price,
+      description: description ?? this.description,
+      category: category ?? this.category,
+      images: images ?? this.images,
+    );
   }
 }

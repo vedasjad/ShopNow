@@ -1,50 +1,47 @@
 import 'dart:convert';
 
-/// id : 5
-/// name : "Others"
-/// image : "https://placeimg.com/640/480/any?r=0.591926261873231"
-
-Category categoryFromJson(String str) => Category.fromJson(json.decode(str));
-String categoryToJson(Category data) => json.encode(data.toJson());
-
 class Category {
-  Category({
-    required num? id,
-    required String? name,
-    required String? image,
-  }) {
-    _id = id;
-    _name = name;
-    _image = image;
+    final int id;
+    final String name;
+    final String image;
+
+    Category({
+        required this.id,
+        required this.name,
+        required this.image,
+    });
+
+  Map<String, dynamic> toMap() {
+    final result = <String, dynamic>{};
+  
+    result.addAll({'id': id});
+    result.addAll({'name': name});
+    result.addAll({'image': image});
+  
+    return result;
   }
 
-  Category.fromJson(dynamic json) {
-    _id = json['id'];
-    _name = json['name'];
-    _image = json['image'];
+  factory Category.fromMap(Map<String, dynamic> map) {
+    return Category(
+      id: map['id']?.toInt() ?? 0,
+      name: map['name'] ?? '',
+      image: map['image'] ?? '',
+    );
   }
-  num? _id;
-  String? _name;
-  String? _image;
+
+  String toJson() => json.encode(toMap());
+
+  factory Category.fromJson(String source) => Category.fromMap(json.decode(source));
+
   Category copyWith({
-    num? id,
+    int? id,
     String? name,
     String? image,
-  }) =>
-      Category(
-        id: id ?? _id,
-        name: name ?? _name,
-        image: image ?? _image,
-      );
-  num? get id => _id;
-  String? get name => _name;
-  String? get image => _image;
-
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['id'] = _id;
-    map['name'] = _name;
-    map['image'] = _image;
-    return map;
+  }) {
+    return Category(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      image: image ?? this.image,
+    );
   }
 }

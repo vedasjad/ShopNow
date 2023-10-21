@@ -1,8 +1,10 @@
+import 'dart:math';
+
+import 'package:ecommerceapptask/providers/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/carousel_provider.dart';
-import '../screens/home_screen.dart';
 import 'carousel_card_widget.dart';
 import 'dots_widget.dart';
 
@@ -28,7 +30,8 @@ class CarouselSlider extends StatelessWidget {
           alignment: Alignment.bottomLeft,
           children: [
             PageView.builder(
-              itemCount: productList.length,
+              itemCount: min(
+                  4, Provider.of<ProductProvider>(context).productList.length),
               allowImplicitScrolling: true,
               controller: _pageController,
               physics: const BouncingScrollPhysics(),
@@ -38,7 +41,8 @@ class CarouselSlider extends StatelessWidget {
               },
               itemBuilder: (BuildContext context, index) {
                 return CarouselCardWidget(
-                  product: productList[index],
+                  product:
+                      Provider.of<ProductProvider>(context).productList[index],
                 );
               },
             ),
