@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'colors.dart';
 
@@ -9,8 +8,7 @@ void showSnackBar(BuildContext context, String text) {
       backgroundColor: AppColors.darkColor,
       content: Text(
         text,
-        style: GoogleFonts.getFont(
-          'Ubuntu',
+        style: const TextStyle(
           color: AppColors.primaryColor,
         ),
       ),

@@ -120,29 +120,43 @@ class _ProductScreenState extends State<ProductScreen> {
                                 .productList
                                 .length),
                         itemBuilder: (context, index) {
-                          return Container(
-                            margin: const EdgeInsets.all(5),
-                            height: 100,
-                            width: 100,
-                            child: Image.network(
-                              Provider.of<ProductProvider>(context)
-                                  .productList[index]
-                                  .images
-                                  .first,
-                              errorBuilder: (context, child, loadingProgress) {
-                                return const SizedBox(
-                                  width: 100,
-                                  height: 100,
-                                  child: Center(
-                                    child: Text(
-                                      'Image Not Found',
-                                      style: TextStyle(
-                                        color: AppColors.primaryColor,
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProductScreen(
+                                      product:
+                                          Provider.of<ProductProvider>(context)
+                                              .productList[index]),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.all(5),
+                              height: 100,
+                              width: 100,
+                              child: Image.network(
+                                Provider.of<ProductProvider>(context)
+                                    .productList[index]
+                                    .images
+                                    .first,
+                                errorBuilder:
+                                    (context, child, loadingProgress) {
+                                  return const SizedBox(
+                                    width: 100,
+                                    height: 100,
+                                    child: Center(
+                                      child: Text(
+                                        'Image Not Found',
+                                        style: TextStyle(
+                                          color: AppColors.primaryColor,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                );
-                              },
+                                  );
+                                },
+                              ),
                             ),
                           );
                         },

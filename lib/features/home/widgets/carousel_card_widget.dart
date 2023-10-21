@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
 
 import '../../../common/colors.dart';
 import '../../../models/Product.dart';
@@ -25,43 +24,56 @@ class _CarouselCardWidgetState extends State<CarouselCardWidget> {
     return Stack(
       alignment: Alignment.bottomLeft,
       children: [
-        Image.network(
-          widget.product.images[0],
-          fit: BoxFit.cover,
-          width: screenWidth + 10,
-          height: screenHeight * 0.35,
-          loadingBuilder: (context, child, loadingProgress) {
-            if (loadingProgress == null) return child;
-            return Shimmer.fromColors(
-              baseColor: AppColors.primaryColor,
-              highlightColor: AppColors.greyColor,
+        Row(
+          children: [
+            Expanded(
+              flex: 2,
               child: Container(
-                constraints: const BoxConstraints.expand(),
-                decoration: const BoxDecoration(
-                  color: Colors.transparent,
-                ),
+                color: AppColors.greyColor,
               ),
-            );
-          },
-          errorBuilder: (context, child, loadingProgress) {
-            return Container(
-              constraints: const BoxConstraints.expand(),
-              color: AppColors.primaryColor,
-              child: const Center(
-                child: Text(
-                  'Image Not Found',
-                  style: TextStyle(
-                    fontSize: 30,
-                    color: Colors.grey,
-                  ),
-                ),
+            ),
+            Expanded(
+              flex: 3,
+              child: Image.network(
+                widget.product.images[0],
+                alignment: Alignment.centerRight,
+                fit: BoxFit.contain,
+                height: screenHeight * 0.35,
+                // loadingBuilder: (context, child, loadingProgress) {
+                //   if (loadingProgress == null) return child;
+                //   return Shimmer.fromColors(
+                //     baseColor: AppColors.primaryColor,
+                //     highlightColor: AppColors.greyColor,
+                //     child: Container(
+                //       constraints: const BoxConstraints.expand(),
+                //       decoration: const BoxDecoration(
+                //         color: Colors.transparent,
+                //       ),
+                //     ),
+                //   );
+                // },
+                errorBuilder: (context, child, loadingProgress) {
+                  return Container(
+                    constraints: const BoxConstraints.expand(),
+                    color: AppColors.primaryColor,
+                    child: const Center(
+                      child: Text(
+                        'Image Not Found',
+                        style: TextStyle(
+                          fontSize: 30,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
-            );
-          },
+            ),
+          ],
         ),
         Container(
           padding: const EdgeInsets.fromLTRB(25, 0, 0, 0),
-          width: screenWidth * 0.6,
+          width: screenWidth * 0.35,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
