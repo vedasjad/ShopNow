@@ -26,8 +26,6 @@ class CarouselSlider extends StatelessWidget {
         children: [
           PageView.builder(
             itemCount: widget.product.images.length,
-            allowImplicitScrolling: true,
-            physics: const BouncingScrollPhysics(),
             onPageChanged: (index) {
               Provider.of<ProductProvider>(context, listen: false)
                   .updateActiveIndex(index);
@@ -45,7 +43,7 @@ class CarouselSlider extends StatelessWidget {
                       child: Text(
                         'Image Not Found',
                         style: TextStyle(
-                          color: AppColors.primaryColor,
+                          color: AppColors.darkColor,
                         ),
                       ),
                     ),

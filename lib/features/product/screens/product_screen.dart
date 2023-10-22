@@ -1,17 +1,19 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../../../common/colors.dart';
 import '../../../models/Product.dart';
-import '../../../providers/product_provider.dart';
 import '../../product/widgets/carousel_slider.dart';
+import '../widgets/buy_now_button.dart';
+import '../widgets/similar_product_card.dart';
 
 class ProductScreen extends StatefulWidget {
-  const ProductScreen({super.key, required this.product});
+  const ProductScreen(
+      {super.key, required this.product, required this.similarProductList});
 
   final Product product;
+  final List<Product> similarProductList;
 
   @override
   State<ProductScreen> createState() => _ProductScreenState();
@@ -25,7 +27,7 @@ class _ProductScreenState extends State<ProductScreen> {
     return Scaffold(
       backgroundColor: AppColors.primaryColor,
       appBar: AppBar(
-        backgroundColor: AppColors.greyColor,
+        backgroundColor: AppColors.primaryColor,
         title: const Text(
           "Details",
           style: TextStyle(
@@ -111,85 +113,19 @@ class _ProductScreenState extends State<ProductScreen> {
                       ),
                     ),
                     SizedBox(
-                      height: 100,
+                      height: 160,
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        itemCount: min(
-                            6,
-                            Provider.of<ProductProvider>(context)
-                                .productList
-                                .length),
+                        itemCount: min(6, widget.similarProductList.length),
                         itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ProductScreen(
-                                      product:
-                                          Provider.of<ProductProvider>(context)
-                                              .productList[index]),
-                                ),
-                              );
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.all(5),
-                              height: 100,
-                              width: 100,
-                              child: Image.network(
-                                Provider.of<ProductProvider>(context)
-                                    .productList[index]
-                                    .images
-                                    .first,
-                                errorBuilder:
-                                    (context, child, loadingProgress) {
-                                  return const SizedBox(
-                                    width: 100,
-                                    height: 100,
-                                    child: Center(
-                                      child: Text(
-                                        'Image Not Found',
-                                        style: TextStyle(
-                                          color: AppColors.primaryColor,
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
+                          return SimilarProductCard(
+                            context: context,
+                            product: widget.similarProductList[index],
                           );
                         },
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: ElevatedButton(
-                              onPressed: () {},
-                              style: ButtonStyle(
-                                elevation: const MaterialStatePropertyAll(20),
-                                backgroundColor: const MaterialStatePropertyAll(
-                                    AppColors.darkColor),
-                                shape: MaterialStatePropertyAll(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                              ),
-                              child: const Text(
-                                "Buy Now",
-                                style: TextStyle(
-                                  color: AppColors.primaryColor,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    const BuyNowButton(),
                   ],
                 ),
               ),

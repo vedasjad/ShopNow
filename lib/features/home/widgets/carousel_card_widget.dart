@@ -1,7 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../common/colors.dart';
 import '../../../models/Product.dart';
+import '../../../providers/product_provider.dart';
 import '../../product/screens/product_screen.dart';
 
 class CarouselCardWidget extends StatefulWidget {
@@ -102,11 +106,29 @@ class _CarouselCardWidgetState extends State<CarouselCardWidget> {
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: InkWell(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            ProductScreen(product: widget.product),
+                    List<Product> similarProductList =
+                        Provider.of<ProductProvider>(context, listen: false)
+                            .productList;
+                    similarProductList.shuffle(Random());
+                    Navigator.of(context).push(
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) {
+                          const begin = Offset(1.0, 0.0);
+                          const end = Offset.zero;
+
+                          final curve = CurvedAnimation(
+                              parent: animation, curve: Curves.ease);
+                          var tween = Tween(begin: begin, end: end);
+                          var offsetAnimation = tween.animate(curve);
+
+                          return SlideTransition(
+                            position: offsetAnimation,
+                            child: ProductScreen(
+                              product: widget.product,
+                              similarProductList: similarProductList,
+                            ),
+                          );
+                        },
                       ),
                     );
                   },

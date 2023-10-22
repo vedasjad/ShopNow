@@ -8,8 +8,8 @@ import '../../../models/Product.dart';
 import '../../../providers/product_provider.dart';
 import '../../product/screens/product_screen.dart';
 
-class ProductCard extends StatefulWidget {
-  const ProductCard({
+class FavouriteProductCard extends StatefulWidget {
+  const FavouriteProductCard({
     super.key,
     required this.screenHeight,
     required this.screenWidth,
@@ -21,20 +21,12 @@ class ProductCard extends StatefulWidget {
   final Product product;
 
   @override
-  State<ProductCard> createState() => _ProductCardState();
+  State<FavouriteProductCard> createState() => _FavouriteProductCardState();
 }
 
-class _ProductCardState extends State<ProductCard> {
-  String newImageUrl = '';
-  // void removeBackground(BuildContext context) async {
-  //   newImageUrl = await HomeServices().removeBackground(
-  //       imageUrl: widget.product.images!.first, context: context);
-  //   setState(() {});
-  // }
-
+class _FavouriteProductCardState extends State<FavouriteProductCard> {
   @override
   Widget build(BuildContext context) {
-    // if (widget.product.id == 1) removeBackground(context);
     return GestureDetector(
       onTap: () {
         List<Product> similarProductList =
@@ -75,7 +67,7 @@ class _ProductCardState extends State<ProductCard> {
             ),
             Expanded(
               child: Image.network(
-                (newImageUrl == '') ? widget.product.images.first : newImageUrl,
+                widget.product.images.first,
                 width: MediaQuery.of(context).size.width,
                 errorBuilder: (context, child, loadingProgress) {
                   return Container(
@@ -83,6 +75,7 @@ class _ProductCardState extends State<ProductCard> {
                     child: const Center(
                       child: Text(
                         'Image Not Found',
+                        textAlign: TextAlign.center,
                         style: TextStyle(
                           color: AppColors.darkColor,
                         ),
@@ -122,6 +115,17 @@ class _ProductCardState extends State<ProductCard> {
                           style: const TextStyle(
                             fontWeight: FontWeight.w900,
                             fontSize: 19,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(5),
+                          child: const Icon(
+                            Icons.favorite,
+                            color: AppColors.darkColor,
+                            size: 18,
                           ),
                         ),
                       ),

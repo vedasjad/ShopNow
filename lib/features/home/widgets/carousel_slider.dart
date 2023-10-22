@@ -34,7 +34,6 @@ class CarouselSlider extends StatelessWidget {
                   4, Provider.of<ProductProvider>(context).productList.length),
               allowImplicitScrolling: true,
               controller: _pageController,
-              physics: const BouncingScrollPhysics(),
               onPageChanged: (index) {
                 Provider.of<CarouselProvider>(context, listen: false)
                     .updateActiveIndex(index);

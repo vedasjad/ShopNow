@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:ecommerceapptask/features/favourites/screens/favourites_screen.dart';
 import 'package:ecommerceapptask/features/home/services/home_services.dart';
 import 'package:ecommerceapptask/providers/carousel_provider.dart';
 import 'package:ecommerceapptask/providers/category_provider.dart';
@@ -94,6 +95,36 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ),
           ),
           Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) {
+                      const begin = Offset(1.0, 0.0);
+                      const end = Offset.zero;
+
+                      final curve = CurvedAnimation(
+                          parent: animation, curve: Curves.ease);
+                      var tween = Tween(begin: begin, end: end);
+                      var offsetAnimation = tween.animate(curve);
+
+                      return SlideTransition(
+                        position: offsetAnimation,
+                        child: const FavouritesScreen(),
+                      );
+                    },
+                  ),
+                );
+              },
+              child: const Icon(
+                Icons.favorite_border_rounded,
+                color: AppColors.darkColor,
+                size: 30,
+              ),
+            ),
+          ),
+          Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: GestureDetector(
               child: const Icon(
@@ -123,6 +154,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               height: 60,
               padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
               child: SearchBar(
+                onSubmitted: (searchText) {},
                 shape: MaterialStatePropertyAll(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
