@@ -1,5 +1,6 @@
 import 'package:ecommerceapptask/providers/carousel_provider.dart';
 import 'package:ecommerceapptask/providers/category_provider.dart';
+import 'package:ecommerceapptask/providers/favourites_provider.dart';
 import 'package:ecommerceapptask/providers/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => CarouselProvider()),
         ChangeNotifierProvider(create: (context) => ProductProvider()),
         ChangeNotifierProvider(create: (context) => CategoryProvider()),
+        ChangeNotifierProvider(create: (context) => FavouritesProvider()),
       ],
       child: MaterialApp(
         title: 'ShopNow',

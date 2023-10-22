@@ -1,6 +1,8 @@
 import 'dart:math';
 
+import 'package:ecommerceapptask/providers/favourites_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../../common/colors.dart';
 import '../../../models/Product.dart';
@@ -37,10 +39,23 @@ class _ProductScreenState extends State<ProductScreen> {
         centerTitle: true,
         actions: [
           GestureDetector(
-            child: const Padding(
-              padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
+            onTap: () {
+              Provider.of<FavouritesProvider>(context, listen: false)
+                      .favouritesList
+                      .contains(widget.product)
+                  ? Provider.of<FavouritesProvider>(context, listen: false)
+                      .removeFavourite(widget.product)
+                  : Provider.of<FavouritesProvider>(context, listen: false)
+                      .addFavourite(widget.product);
+            },
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
               child: Icon(
-                Icons.favorite_border_rounded,
+                Provider.of<FavouritesProvider>(context)
+                        .favouritesList
+                        .contains(widget.product)
+                    ? Icons.favorite_rounded
+                    : Icons.favorite_border_rounded,
                 color: AppColors.darkColor,
               ),
             ),

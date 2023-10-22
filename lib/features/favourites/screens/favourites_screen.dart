@@ -1,8 +1,8 @@
 import 'package:ecommerceapptask/common/colors.dart';
+import 'package:ecommerceapptask/providers/favourites_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../providers/product_provider.dart';
 import '../widgets/favourite_product_card.dart';
 
 class FavouritesScreen extends StatefulWidget {
@@ -33,7 +33,8 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
         child: SizedBox(
           height: screenHeight *
               0.33 *
-              (Provider.of<ProductProvider>(context).productList.length / 2 +
+              (Provider.of<FavouritesProvider>(context).favouritesList.length /
+                      2 +
                   1),
           child: GridView.builder(
             padding: const EdgeInsets.all(15),
@@ -44,13 +45,14 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
               crossAxisCount: 2,
               mainAxisExtent: screenHeight * 0.32,
             ),
-            itemCount: Provider.of<ProductProvider>(context).productList.length,
+            itemCount:
+                Provider.of<FavouritesProvider>(context).favouritesList.length,
             itemBuilder: (context, index) {
               return FavouriteProductCard(
                 screenHeight: screenHeight,
                 screenWidth: screenWidth,
-                product:
-                    Provider.of<ProductProvider>(context).productList[index],
+                product: Provider.of<FavouritesProvider>(context)
+                    .favouritesList[index],
               );
             },
           ),

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../../common/colors.dart';
 import '../../../models/Product.dart';
+import '../../../providers/favourites_provider.dart';
 import '../../../providers/product_provider.dart';
 import '../../product/screens/product_screen.dart';
 
@@ -121,6 +122,11 @@ class _FavouriteProductCardState extends State<FavouriteProductCard> {
                       Padding(
                         padding: const EdgeInsets.all(5.0),
                         child: InkWell(
+                          onTap: () {
+                            Provider.of<FavouritesProvider>(context,
+                                    listen: false)
+                                .removeFavourite(widget.product);
+                          },
                           borderRadius: BorderRadius.circular(5),
                           child: const Icon(
                             Icons.favorite,
