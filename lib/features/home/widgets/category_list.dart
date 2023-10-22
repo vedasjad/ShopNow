@@ -20,7 +20,7 @@ class CategoryList extends StatelessWidget {
         shrinkWrap: true,
         itemCount: Provider.of<CategoryProvider>(context).categoryList.length,
         itemBuilder: (context, index) {
-          return InkWell(
+          return GestureDetector(
             onTap: () {
               Provider.of<CategoryProvider>(context, listen: false)
                   .updateSelectedCategory(
