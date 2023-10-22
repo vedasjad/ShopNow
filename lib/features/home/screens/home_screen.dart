@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:ecommerceapptask/features/favourites/screens/favourites_screen.dart';
 import 'package:ecommerceapptask/features/home/services/home_services.dart';
+import 'package:ecommerceapptask/features/search/screens/searched_products_screen.dart';
 import 'package:ecommerceapptask/providers/carousel_provider.dart';
 import 'package:ecommerceapptask/providers/category_provider.dart';
 import 'package:ecommerceapptask/providers/product_provider.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/colors.dart';
+import '../../../models/Product.dart';
 import '../widgets/carousel_slider.dart';
 import '../widgets/category_list.dart';
 import '../widgets/product_card.dart';
@@ -22,6 +24,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   final PageController _pageController = PageController(initialPage: 0);
   Timer? autoPlayTimer;
+
+  final TextEditingController _searchTextController = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -56,6 +60,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   void dispose() {
+    _searchTextController.dispose();
     _pageController.dispose();
     autoPlayTimer?.cancel();
     super.dispose();
@@ -154,7 +159,38 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               height: 60,
               padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
               child: SearchBar(
-                onSubmitted: (searchText) {},
+                controller: _searchTextController,
+                onSubmitted: (searchText) {
+                  List<Product> filteredProducts = Provider.of<ProductProvider>(
+                          context,
+                          listen: false)
+                      .productList
+                      .where((Product product) => product.title
+                          .toLowerCase()
+                          .contains(_searchTextController.text.toLowerCase()))
+                      .toList();
+                  final String searchText = _searchTextController.text;
+                  Navigator.of(context).push(
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation, secondaryAnimation) {
+                        const begin = Offset(1.0, 0.0);
+                        const end = Offset.zero;
+                        final curve = CurvedAnimation(
+                            parent: animation, curve: Curves.ease);
+                        var tween = Tween(begin: begin, end: end);
+                        var offsetAnimation = tween.animate(curve);
+                        return SlideTransition(
+                          position: offsetAnimation,
+                          child: SearchedProductsScreen(
+                            filteredProducts: filteredProducts,
+                            searchedText: searchText,
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                  _searchTextController.clear();
+                },
                 shape: MaterialStatePropertyAll(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
