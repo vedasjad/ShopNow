@@ -2,17 +2,20 @@ import 'dart:async';
 
 import 'package:ecommerceapptask/features/favourites/screens/favourites_screen.dart';
 import 'package:ecommerceapptask/features/home/services/home_services.dart';
+import 'package:ecommerceapptask/features/home/widgets/loaders/loading_category_list.dart';
+import 'package:ecommerceapptask/features/home/widgets/loaders/loading_product_cards.dart';
 import 'package:ecommerceapptask/features/search/screens/searched_products_screen.dart';
 import 'package:ecommerceapptask/providers/carousel_provider.dart';
-import 'package:ecommerceapptask/providers/category_provider.dart';
 import 'package:ecommerceapptask/providers/product_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/colors.dart';
 import '../../../models/Product.dart';
-import '../widgets/carousel_slider.dart';
+import '../../../providers/category_provider.dart';
+import '../../home/widgets/carousel_slider.dart';
 import '../widgets/category_list.dart';
+import '../widgets/loaders/loading_carousel_slider.dart';
 import '../widgets/product_card.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -212,82 +215,102 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 ),
               ),
             ),
-            CarouselSlider(
-              screenHeight: screenHeight,
-              pageController: _pageController,
-            ),
-            const CategoryList(),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(15.0, 20, 5, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    "New Arrival",
-                    style: TextStyle(
-                      fontSize: 23,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.darkColor,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: (Provider.of<CategoryProvider>(context, listen: true)
-                          .selectedCategory ==
-                      "All Product")
-                  ? screenHeight *
-                      0.33 *
-                      (Provider.of<ProductProvider>(context)
+            Provider.of<ProductProvider>(context).productList.isEmpty
+                ? const Column(
+                    children: [
+                      LoadingCarouselSlider(),
+                      LoadingCategoryList(),
+                      LoadingProductCards(),
+                    ],
+                  )
+                : Column(
+                    children: [
+                      CarouselSlider(
+                        screenHeight: screenHeight,
+                        pageController: _pageController,
+                      ),
+                      const CategoryList(),
+                      const Padding(
+                        padding: EdgeInsets.fromLTRB(15.0, 20, 5, 0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              "New Arrival",
+                              style: TextStyle(
+                                fontSize: 23,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.darkColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: (Provider.of<CategoryProvider>(context,
+                                        listen: true)
+                                    .selectedCategory ==
+                                "All Product")
+                            ? screenHeight *
+                                0.33 *
+                                (Provider.of<ProductProvider>(context)
+                                            .productList
+                                            .length /
+                                        2 +
+                                    1)
+                            : screenHeight *
+                                0.33 *
+                                (Provider.of<CategoryProvider>(context)
+                                            .selectedCategoryProductsList
+                                            .length /
+                                        2 +
+                                    1),
+                        child: GridView.builder(
+                          physics: const BouncingScrollPhysics(
+                              parent: NeverScrollableScrollPhysics()),
+                          padding: const EdgeInsets.all(15),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 10,
+                            childAspectRatio: 2 / 3,
+                            crossAxisCount: 2,
+                            mainAxisExtent: screenHeight * 0.32,
+                          ),
+                          itemCount: (Provider.of<CategoryProvider>(context,
+                                          listen: true)
+                                      .selectedCategory ==
+                                  "All Product")
+                              ? Provider.of<ProductProvider>(context)
                                   .productList
-                                  .length /
-                              2 +
-                          1)
-                  : screenHeight *
-                      0.33 *
-                      (Provider.of<CategoryProvider>(context)
+                                  .length
+                              : Provider.of<CategoryProvider>(context)
                                   .selectedCategoryProductsList
-                                  .length /
-                              2 +
-                          1),
-              child: GridView.builder(
-                physics: const BouncingScrollPhysics(
-                    parent: NeverScrollableScrollPhysics()),
-                padding: const EdgeInsets.all(15),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  childAspectRatio: 2 / 3,
-                  crossAxisCount: 2,
-                  mainAxisExtent: screenHeight * 0.32,
-                ),
-                itemCount: (Provider.of<CategoryProvider>(context, listen: true)
-                            .selectedCategory ==
-                        "All Product")
-                    ? Provider.of<ProductProvider>(context).productList.length
-                    : Provider.of<CategoryProvider>(context)
-                        .selectedCategoryProductsList
-                        .length,
-                itemBuilder: (context, index) {
-                  return (Provider.of<CategoryProvider>(context, listen: true)
-                              .selectedCategory ==
-                          "All Product")
-                      ? ProductCard(
-                          screenHeight: screenHeight,
-                          screenWidth: screenWidth,
-                          product: Provider.of<ProductProvider>(context)
-                              .productList[index],
-                        )
-                      : ProductCard(
-                          screenHeight: screenHeight,
-                          screenWidth: screenWidth,
-                          product: Provider.of<CategoryProvider>(context)
-                              .selectedCategoryProductsList[index],
-                        );
-                },
-              ),
-            ),
+                                  .length,
+                          itemBuilder: (context, index) {
+                            return (Provider.of<CategoryProvider>(context,
+                                            listen: true)
+                                        .selectedCategory ==
+                                    "All Product")
+                                ? ProductCard(
+                                    screenHeight: screenHeight,
+                                    screenWidth: screenWidth,
+                                    product:
+                                        Provider.of<ProductProvider>(context)
+                                            .productList[index],
+                                  )
+                                : ProductCard(
+                                    screenHeight: screenHeight,
+                                    screenWidth: screenWidth,
+                                    product: Provider.of<CategoryProvider>(
+                                            context)
+                                        .selectedCategoryProductsList[index],
+                                  );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
           ],
         ),
       ),
