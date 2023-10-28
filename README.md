@@ -1,16 +1,23 @@
-# ecommerceapptask
+# ShopNow - E-commerce Flutter App
 
-A new Flutter project.
+## [DEMO](https://drive.google.com/file/d/10myoZk1MBLgbMbKMcCm23vYF_8Z7j1yy/view?usp=drive_link)
 
-## Getting Started
+## Screenshots
 
-This project is a starting point for a Flutter application.
+<img src="screenshots/home.jpg" width="25%" alt="Home Screen" title="Home Screen"> <img src="screenshots/product-details.jpg" width="25%" alt="Product Details Screen" title="Product Details Screen"> <img src="screenshots/favourites.jpg" width="25%" alt="Favourites Screen" title="Favourites Screen"> 
 
-A few resources to get you started if this is your first Flutter project:
+<img src="screenshots/search-results.jpg" width="25%" alt="Search Results Screen" title="Search Results Screen"> <img src="screenshots/loading.jpg" width="25%" alt="Loading Screen" title="Loading Screen"> 
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Features
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Browse and search for a wide range of products.
+- View detailed product information including images, descriptions, and prices.
+- Add products to your favorites list for quick access.
+- Smooth and custom page transition animations.
+- Carousel for an attractive product display.
+- Well Implemented Loading Screen
+
+## Dependencies
+
+- Provider
+- HTTP Package (for API integration)
